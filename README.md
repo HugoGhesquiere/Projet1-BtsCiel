@@ -1,8 +1,8 @@
 # Projet1-BtsCiel
 
-I/ Gerer la temperature et l'humiditée d'une baie de brassage
+1) Gerer la temperature et l'humiditée d'une baie de brassage
 
-1) Arduino
+- Arduino
      - Entrée
          - Capteur de temperature
          - Capteur d'humiditée
@@ -17,12 +17,12 @@ I/ Gerer la temperature et l'humiditée d'une baie de brassage
            - Entre 40% et 60%
          - Activation automatique du ventilateur en cas de temperature trop élevée
 
-2) Lien entre machines
+- Lien entre machines
      - Liens
             - Arduino
             - Switch
             - Ordinateur
 
-3) Partie Ordinateur
+- Partie Ordinateur
      - Site (Local host)
      - Terminal
