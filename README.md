@@ -13,4 +13,16 @@ I/ Gerer la temperature et l'humiditée d'une baie de brassage
 
      - Programmation
          - Alerte si les valeur ne sont pas dans les plages conseillées
+           - Entre 20°C et 26°C
+           - Entre 40% et 60%
          - Activation automatique du ventilateur en cas de temperature trop élevée
+
+2) Lien entre machines
+     - Liens
+            - Arduino
+            - Switch
+            - Ordinateur
+
+3) Partie Ordinateur
+     - Site (Local host)
+     - Terminal
