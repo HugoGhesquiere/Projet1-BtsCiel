@@ -29,20 +29,20 @@ void loop() {
  Humidity = am2320.readTemperature();
  if Temperature > 26{
     digitalWrite(Fan, HIGH);
-    Serial.println("Temperature Trop élevée");   // a déplacer ailleur (Ecran lcdI2C ou autre support)
+    Serial.println("Temperature Trop élevée");   // A Afficher dans le site
   }
   else if Temperature < 20{
-     Serial.println("Temperature Trop Basse");   // a déplacer ailleur (Ecran lcdI2C ou autre support)
+     Serial.println("Temperature Trop Basse");   // A Afficher dans le site
   }
   else{
     digitalWrite(Fan, LOW);
   }
 
   if humiditee > 60{
-    Serial.println("Humiditee Trop Haute");   // a déplacer ailleur (Ecran lcdI2C ou autre support)
+    Serial.println("Humiditee Trop Haute");   // A Afficher dans le site
   }
   else if humiditee < 40{
-    Serial.println("Humiditee Trop Basse");   // a déplacer ailleur (Ecran lcdI2C ou autre support)
+    Serial.println("Humiditee Trop Basse");   // A Afficher dans le site
   }
   
   lcdI2C.print("Hummiditee: ");
