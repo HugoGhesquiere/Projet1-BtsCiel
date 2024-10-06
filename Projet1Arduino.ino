@@ -1,44 +1,53 @@
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
+#include "Arduino.h"
+#include "LiquidCrystal_PCF8574.h"
+#include "Fan.h"
+#include "Wire.h"
+#include "Adafruit_Sensor.h"
+#include "Adafruit_AM2320.h"
 
-
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+#define LCD_ADDRESS 0x3F 
+// To find your LCD address go to: http://playground.arduino.cc/Main/I2cScanner and run example.
+#define LCD_ROWS 2
+#define LCD_COLUMNS 16
+#define SCROLL_DELAY 150
+#define BACKLIGHT 255
 
 void setup() {
   // put your setup code here, to run once:
-  const int fan;
-  const int humiditee;
-  const float temperature;
+  int Fan;
+  int Humidity;
+  float Temperature;
   Serial.begin(9600);
-  lcd.begin(); // Démarre l'afficheur
-  lcd.backlight(); // Allume le rétro-éclairage
-
+  // initialize the lcdI2C
+  lcdI2C.begin(LCD_COLUMNS, LCD_ROWS, LCD_ADDRESS, BACKLIGHT); 
 }
+
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if temperature > 26{
-    digitalWrite(fan, HIGH);
-    Serial.println("Temperature Trop élevée");   // a déplacer ailleur (Ecran lcd ou autre support)
+ Temperature = am2320.readTemperature();
+ Humidity = am2320.readTemperature();
+ if Temperature > 26{
+    digitalWrite(Fan, HIGH);
+    Serial.println("Temperature Trop élevée");   // a déplacer ailleur (Ecran lcdI2C ou autre support)
   }
-  else if temperature < 20{
-     Serial.println("Temperature Trop Basse");   // a déplacer ailleur (Ecran lcd ou autre support)
+  else if Temperature < 20{
+     Serial.println("Temperature Trop Basse");   // a déplacer ailleur (Ecran lcdI2C ou autre support)
   }
   else{
-    digitalWrite(fan, LOW);
+    digitalWrite(Fan, LOW);
   }
-
 
   if humiditee > 60{
-    Serial.println("Humiditee Trop Haute");   // a déplacer ailleur (Ecran lcd ou autre support)
+    Serial.println("Humiditee Trop Haute");   // a déplacer ailleur (Ecran lcdI2C ou autre support)
   }
   else if humiditee < 40{
-    Serial.println("Humiditee Trop Basse");   // a déplacer ailleur (Ecran lcd ou autre support)
+    Serial.println("Humiditee Trop Basse");   // a déplacer ailleur (Ecran lcdI2C ou autre support)
   }
   
-  lcd.print("Hummiditee: ");
-  lcd.print(humidite);
-  lcd.setCursor(0, 1);
-  lcd.print("Temperature: ");
-  lcd.print(temperature);
+  lcdI2C.print("Hummiditee: ");
+  lcdI2C.print(humidite);
+  lcdI2C.setCursor(0, 1);
+  lcdI2C.print("Temperature: ");
+  lcdI2C.print(Temperature);
 }
