@@ -11,18 +11,21 @@
 #define SCROLL_DELAY 150  
 #define BACKLIGHT 255  
 
-#define FAN_PIN 9 // Remplacez par le numéro de broche que vous voulez utiliser pour le ventilateur  
+#define SENSOR_PIN 6
+#define SENSOR_THRESHOLD 200
+#define OFF 0
 
-#define DHT_PIN 2 // Remplacez par le numéro de broche utilisé pour le capteur DHT  
+#define DHT_PIN 4 // Remplacez par le numéro de broche utilisé pour le capteur DHT  
 #define DHT_TYPE DHT22 // Type de capteur (DHT11 ou DHT22) pour AM2302
 
 DHT dht(DHT_PIN, DHT_TYPE); // Créer une instance du capteur DHT
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
+FanController fan(SENSOR_PIN, OFF);
 
 void setup() {
   // put your setup code here, to run once:
-  int Fan;
+  fan.begin();
   Serial.begin(9600);
   
   lcd.init();   // initialisation du LCD
@@ -32,7 +35,7 @@ void setup() {
 
 
 void loop() {
-  float Temperature = dht.readTemperature(); // Lire la température à partir du capteur DHT  
+  float Temperature = 27.2; // Lire la température à partir du capteur DHT  
   float Humidity = dht.readHumidity(); // Lire l'humidité à partir du capteur DHT
   
   if (isnan(Temperature) || isnan(Humidity)) {
@@ -43,16 +46,16 @@ void loop() {
   }
   
   // Logique du ventilateur  
-  if (Temperature > 26) {
-    digitalWrite(FAN_PIN, HIGH);
+  if (Temperature > 26.0) {
+    FanController fan(SENSOR_PIN, SENSOR_THRESHOLD);
     Serial.println("Température Trop élevée");
   } 
-  else if (Temperature < 20) {
+  else if (Temperature < 20.0) {
     Serial.println("Température Trop Basse");
-    digitalWrite(FAN_PIN, LOW);
+    FanController fan(SENSOR_PIN, OFF);
   } 
   else {
-    digitalWrite(FAN_PIN, LOW);
+    FanController fan(SENSOR_PIN, OFF);
   }
   
   if (Humidity > 60) {
@@ -72,5 +75,5 @@ void loop() {
   lcd.print(Temperature);
     
     
-  delay(1000); // Ajouter un délai pour éviter des lectures trop fréquentes  
+  delay(5000); // Ajouter un délai pour éviter des lectures trop fréquentes  
 }
