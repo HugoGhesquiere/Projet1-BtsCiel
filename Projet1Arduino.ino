@@ -3,6 +3,8 @@
 #include <FanController.h>
 #include <Wire.h>
 #include <DHT.h> // Inclure la bibliothèque DHT
+#include <Ethernet.h>
+#include <SPI.h>
 
 // Définir l'adresse de l'écran LCD  
 #define LCD_ADDRESS 0x27 // Remplacez ceci par l'adresse correcte de votre écran LCD  
@@ -19,6 +21,8 @@
 DHT dht(DHT_PIN, DHT_TYPE); // Créer une instance du capteur DHT
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
+IPAddress ip(172, 16, 35, 166);
+// setup les autres addresse ip
 
 void setup() {
   // put your setup code here, to run once:
