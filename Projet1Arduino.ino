@@ -11,9 +11,7 @@
 #define SCROLL_DELAY 150  
 #define BACKLIGHT 255  
 
-#define SENSOR_PIN 6
-#define SENSOR_THRESHOLD 200
-#define OFF 0
+#define FAN_PIN 5
 
 #define DHT_PIN 4 // Remplacez par le numéro de broche utilisé pour le capteur DHT  
 #define DHT_TYPE DHT22 // Type de capteur (DHT11 ou DHT22) pour AM2302
@@ -21,13 +19,10 @@
 DHT dht(DHT_PIN, DHT_TYPE); // Créer une instance du capteur DHT
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
-FanController fan(SENSOR_PIN, OFF);
 
 void setup() {
   // put your setup code here, to run once:
-  fan.begin();
   Serial.begin(9600);
-  
   lcd.init();   // initialisation du LCD
   lcd.backlight();   // active le rétroéclairage lcd.noBacklight() pour le désactiver
   lcd.clear();
@@ -35,28 +30,24 @@ void setup() {
 
 
 void loop() {
-  float Temperature = 27.2; // Lire la température à partir du capteur DHT  
+  float Temperature = dht.readTemperature(); // Lire la température à partir du capteur DHT  
   float Humidity = dht.readHumidity(); // Lire l'humidité à partir du capteur DHT
   
   if (isnan(Temperature) || isnan(Humidity)) {
     Serial.println("Échec de la lecture du capteur DHT !");
     lcd.clear(); // Effacer l'écran LCD  
     lcd.print("Erreur capteur"); // Afficher un message d'erreur  
-    return; // Sortir de la boucle si la lecture a échoué  
   }
   
   // Logique du ventilateur  
   if (Temperature > 26.0) {
-    FanController fan(SENSOR_PIN, SENSOR_THRESHOLD);
+    digitalWrite(FAN_PIN, HIGH);
     Serial.println("Température Trop élevée");
   } 
   else if (Temperature < 20.0) {
     Serial.println("Température Trop Basse");
-    FanController fan(SENSOR_PIN, OFF);
+    digitalWrite(FAN_PIN, LOW);
   } 
-  else {
-    FanController fan(SENSOR_PIN, OFF);
-  }
   
   if (Humidity > 60) {
     Serial.println("Humidité Trop Haute"); // À afficher dans le site  
@@ -74,7 +65,7 @@ void loop() {
   lcd.setCursor(0, 1);
   lcd.print("Temp:");
   lcd.print(Temperature);
-  lcd.print("°C");
+  lcd.print("C");
     
     
   delay(5000); // Ajouter un délai pour éviter des lectures trop fréquentes  
