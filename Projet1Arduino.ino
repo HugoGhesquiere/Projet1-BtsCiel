@@ -70,9 +70,11 @@ void loop() {
   lcd.setCursor(0, 0);
   lcd.print("Humidity:");
   lcd.print(Humidity); 
+  lcd.print("%");
   lcd.setCursor(0, 1);
-  lcd.print("Temperature:");
+  lcd.print("Temp:");
   lcd.print(Temperature);
+  lcd.print("°C");
     
     
   delay(5000); // Ajouter un délai pour éviter des lectures trop fréquentes  
