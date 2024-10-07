@@ -5,8 +5,8 @@
 #include "Adafruit_Sensor.h"
 #include "Adafruit_AM2320.h"
 
-#define LCD_ADDRESS 0x3F 
-// To find your LCD address go to: http://playground.arduino.cc/Main/I2cScanner and run example.
+
+#define LCD_ADDRESS 0x
 #define LCD_ROWS 2
 #define LCD_COLUMNS 16
 #define SCROLL_DELAY 150
