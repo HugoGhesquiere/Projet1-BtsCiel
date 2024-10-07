@@ -39,15 +39,15 @@ void loop() {
     digitalWrite(Fan, LOW);
   }
 
-  if humiditee > 60{
+  if Humidity > 60{
     Serial.println("Humiditee Trop Haute");   // A Afficher dans le site
   }
-  else if humiditee < 40{
+  else if Humidity < 40{
     Serial.println("Humiditee Trop Basse");   // A Afficher dans le site
   }
   
-  lcdI2C.print("Hummiditee: ");
-  lcdI2C.print(humidite);
+  lcdI2C.print("Humiditee: ");
+  lcdI2C.print(Humidity);
   lcdI2C.setCursor(0, 1);
   lcdI2C.print("Temperature: ");
   lcdI2C.print(Temperature);
