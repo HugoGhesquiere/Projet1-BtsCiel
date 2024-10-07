@@ -11,6 +11,7 @@
 #define LCD_COLUMNS 16
 #define SCROLL_DELAY 150
 #define BACKLIGHT 255
+#define Fan ?? // numéro de broche a choisir
 
 void setup() {
   // put your setup code here, to run once:
