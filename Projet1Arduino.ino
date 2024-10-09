@@ -100,11 +100,11 @@ void loop() {
   lcd.print(Temperature);
   lcd.print("C");
 
-  expjson = "{\"Temp\":" + String(Temperature) + ",\"Hum\":" + String(Humidity) + "}";
+  expjson = "{\"temp\":" + String(Temperature) + ",\"hum\":" + String(Humidity) + "}";
 
   // Serial.print(expjson);
   serveurHTTP(server, expjson);
-  delay(5000); // Ajouter un délai pour éviter des lectures trop fréquentes  
+  delay(1000); // Ajouter un délai pour éviter des lectures trop fréquentes  
 }
 
 void serveurHTTP(EthernetServer serv, String txtjson) 
