@@ -34,7 +34,7 @@ EthernetServer server(80); // Création d'un serveur sur le port 80
 
 float Humidity;
 float Temperature;
-String txtjson;
+String expjson;
 
 void setup() {
   // put your setup code here, to run once:
@@ -86,6 +86,9 @@ void loop() {
     Serial.println("Humidité Trop Basse"); // À afficher dans le site  
     }
   
+  // On force les valeur Temperature et Humidity suite a un problème du capteur
+  Temperature = 26.0;
+  Humidity = 50.3;
   // Affichage sur l'écran LCD  
   lcd.clear();  // Déplacer cette ligne ici pour éviter que l'affichage soit trop rapide
   lcd.setCursor(0, 0);
@@ -96,10 +99,11 @@ void loop() {
   lcd.print("Temp:");
   lcd.print(Temperature);
   lcd.print("C");
-  
-  txtjson = "{\"Temp\":" + String(Temperature) + ",\"Hum\":" + String(Humidity) + "}";
 
-  Serial.print(txtjson);
+  expjson = "{\"Temp\":" + String(Temperature) + ",\"Hum\":" + String(Humidity) + "}";
+
+  // Serial.print(expjson);
+  serveurHTTP(server, expjson);
   delay(5000); // Ajouter un délai pour éviter des lectures trop fréquentes  
 }
 
