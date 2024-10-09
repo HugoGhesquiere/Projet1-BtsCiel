@@ -23,9 +23,9 @@ DHT dht(DHT_PIN, DHT_TYPE); // Créer une instance du capteur DHT
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // setup les autres addresse ip
-byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED } // Adresse MAC Shield ethernet
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // Adresse MAC Shield ethernet
 IPAddress ip(172, 16, 35, 166);
-IPAddress pcIp(172, 18, 3, 165); //a modif
+// IPAddress pcIp(172, 18, 3, 165); //a modif
 IPAddress mySubnet(255, 255, 0, 0); // Masque de sous-réseau
 IPAddress myGateway(192, 168, 1, 1); // Adresse IP de la passerelle (routeur)//a changer)
 
@@ -41,19 +41,61 @@ void setup() {
 
    Ethernet.begin(mac, ip, myGateway, mySubnet);
    
-   server.begin();
-   // test pour serveur ethernet
-   Serial.print("Serveur prêt à l'adresse : ");
-   Serial.println(Ethernet.localIP());
-
-    // Restez à l'écoute des clients  
-    EthernetClient client = server.available();
-    if (client) {
-        // Traitez le client ici  
-        // ...
-        client.stop(); // Ferme la connexion  
-    }
+   server.begin(80);
+//   // test pour serveur ethernet
+//   Serial.print("Serveur prêt à l'adresse : ");
+//   Serial.println(Ethernet.localIP());
+//
+//    // Restez à l'écoute des clients  
+//    EthernetClient client = server.available();
+//    if (client) {
+//        // Traitez le client ici  
+//        // ...
+//        client.stop(); // Ferme la connexion  
+//    }
 }
+
+void serveurHTTP(EthernetServer serv, String txtjson) 
+{ /* Cette fonction écoute si une connexion cliente est présente. Si il y a une requête client alors le serveur répond par une requête HTTP en envoyant le texte au format json (paramètre txtjson) */ 
+EthernetClient client = serv.available(); //Ecoute connexion cliente if (client) { 
+Serial.println("new client"); 
+// Une requête HTTP termine toujours par une ligne vide. 
+boolean currentLineIsBlank = true; 
+while (client.connected()) { 
+if (client.available()) { 
+No. 5 / 6
+char c = client.read(); 
+Serial.write(c); 
+// On répond à la requête lorsque cuurentLineIsBlank et 
+// que le dernier caractère reçu est un \n (nouvelle ligne) 
+if (c == '\n' && currentLineIsBlank) { 
+// Création et envoi de l'entête HTTP 
+client.println("HTTP/1.1 200 OK"); 
+client.println("Content-Type: application/json;charset=utf-8"); client.println("Server : Arduino"); 
+client.println("Access-Control-Allow-Origin: *"); 
+client.println("Access-Control-Allow-Headers: content-type"); client.println("Connection: close"); // On fermera la connexion une fois la réponse envoyée. 
+client.println(); 
+// Envoi des données en json 
+client.print(txtjson); 
+break; //Cela permet de sortir de la boucle while puisqu'on a envoyer une réponse. 
+} 
+//Important 
+// \n -> new line (Nouvelle ligne) 
+// \r -> carriage return (Retour chariot début de ligne) 
+if (c == '\n') { 
+// On démarre une nouvelle ligne 
+currentLineIsBlank = true; 
+} else if (c != '\r') { 
+// Il y a au moins un caractère sur la ligne 
+currentLineIsBlank = false; 
+} 
+} 
+} 
+delay(1); // Cela permet de donner du temps au serveur 
+client.stop(); //On ferme la connexion 
+Serial.println("client déconnecté"); 
+} 
+} 
 
 
 void loop() {
