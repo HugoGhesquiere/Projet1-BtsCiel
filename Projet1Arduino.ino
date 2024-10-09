@@ -21,8 +21,16 @@
 DHT dht(DHT_PIN, DHT_TYPE); // Créer une instance du capteur DHT
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
-IPAddress ip(172, 16, 35, 166);
+
 // setup les autres addresse ip
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED } // Adresse MAC Shield ethernet
+IPAddress ip(172, 16, 35, 166);
+IPAddress pcIp(172, 18, 3, 165); //a modif
+IPAddress mySubnet(255, 255, 0, 0); // Masque de sous-réseau
+IPAddress myGateway(192, 168, 1, 1); // Adresse IP de la passerelle (routeur)//a changer)
+
+// Initialiser une instance Ethernet  
+EthernetServer server(80); // Création d'un serveur sur le port 80
 
 void setup() {
   // put your setup code here, to run once:
@@ -30,6 +38,21 @@ void setup() {
   lcd.init();   // initialisation du LCD
   lcd.backlight();   // active le rétroéclairage lcd.noBacklight() pour le désactiver
   lcd.clear();
+
+   Ethernet.begin(mac, ip, myGateway, mySubnet);
+   
+   server.begin();
+   // test pour serveur ethernet
+   Serial.print("Serveur prêt à l'adresse : ");
+   Serial.println(Ethernet.localIP());
+
+    // Restez à l'écoute des clients  
+    EthernetClient client = server.available();
+    if (client) {
+        // Traitez le client ici  
+        // ...
+        client.stop(); // Ferme la connexion  
+    }
 }
 
 
