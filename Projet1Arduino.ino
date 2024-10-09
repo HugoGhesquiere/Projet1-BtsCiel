@@ -55,48 +55,6 @@ void setup() {
 //    }
 }
 
-void serveurHTTP(EthernetServer serv, String txtjson) 
-{ /* Cette fonction écoute si une connexion cliente est présente. Si il y a une requête client alors le serveur répond par une requête HTTP en envoyant le texte au format json (paramètre txtjson) */ 
-EthernetClient client = serv.available(); //Ecoute connexion cliente if (client) { 
-Serial.println("new client"); 
-// Une requête HTTP termine toujours par une ligne vide. 
-boolean currentLineIsBlank = true; 
-while (client.connected()) { 
-if (client.available()) { 
-No. 5 / 6
-char c = client.read(); 
-Serial.write(c); 
-// On répond à la requête lorsque cuurentLineIsBlank et 
-// que le dernier caractère reçu est un \n (nouvelle ligne) 
-if (c == '\n' && currentLineIsBlank) { 
-// Création et envoi de l'entête HTTP 
-client.println("HTTP/1.1 200 OK"); 
-client.println("Content-Type: application/json;charset=utf-8"); client.println("Server : Arduino"); 
-client.println("Access-Control-Allow-Origin: *"); 
-client.println("Access-Control-Allow-Headers: content-type"); client.println("Connection: close"); // On fermera la connexion une fois la réponse envoyée. 
-client.println(); 
-// Envoi des données en json 
-client.print(txtjson); 
-break; //Cela permet de sortir de la boucle while puisqu'on a envoyer une réponse. 
-} 
-//Important 
-// \n -> new line (Nouvelle ligne) 
-// \r -> carriage return (Retour chariot début de ligne) 
-if (c == '\n') { 
-// On démarre une nouvelle ligne 
-currentLineIsBlank = true; 
-} else if (c != '\r') { 
-// Il y a au moins un caractère sur la ligne 
-currentLineIsBlank = false; 
-} 
-} 
-} 
-delay(1); // Cela permet de donner du temps au serveur 
-client.stop(); //On ferme la connexion 
-Serial.println("client déconnecté"); 
-} 
-} 
-
 
 void loop() {
   float Temperature = dht.readTemperature(); // Lire la température à partir du capteur DHT  
@@ -139,3 +97,45 @@ void loop() {
     
   delay(5000); // Ajouter un délai pour éviter des lectures trop fréquentes  
 }
+
+void serveurHTTP(EthernetServer serv, String txtjson) 
+{ /* Cette fonction écoute si une connexion cliente est présente. Si il y a une requête client alors le serveur répond par une requête HTTP en envoyant le texte au format json (paramètre txtjson) */ 
+EthernetClient client = serv.available(); //Ecoute connexion cliente if (client) { 
+Serial.println("new client"); 
+// Une requête HTTP termine toujours par une ligne vide. 
+boolean currentLineIsBlank = true; 
+while (client.connected()) { 
+if (client.available()) { 
+No. 5 / 6
+char c = client.read(); 
+Serial.write(c); 
+// On répond à la requête lorsque cuurentLineIsBlank et 
+// que le dernier caractère reçu est un \n (nouvelle ligne) 
+if (c == '\n' && currentLineIsBlank) { 
+// Création et envoi de l'entête HTTP 
+client.println("HTTP/1.1 200 OK"); 
+client.println("Content-Type: application/json;charset=utf-8"); client.println("Server : Arduino"); 
+client.println("Access-Control-Allow-Origin: *"); 
+client.println("Access-Control-Allow-Headers: content-type"); client.println("Connection: close"); // On fermera la connexion une fois la réponse envoyée. 
+client.println(); 
+// Envoi des données en json 
+client.print(txtjson); 
+break; //Cela permet de sortir de la boucle while puisqu'on a envoyer une réponse. 
+} 
+//Important 
+// \n -> new line (Nouvelle ligne) 
+// \r -> carriage return (Retour chariot début de ligne) 
+if (c == '\n') { 
+// On démarre une nouvelle ligne 
+currentLineIsBlank = true; 
+} else if (c != '\r') { 
+// Il y a au moins un caractère sur la ligne 
+currentLineIsBlank = false; 
+} 
+} 
+} 
+delay(1); // Cela permet de donner du temps au serveur 
+client.stop(); //On ferme la connexion 
+Serial.println("client déconnecté"); 
+} 
+} 
