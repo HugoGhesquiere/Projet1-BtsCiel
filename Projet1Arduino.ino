@@ -32,6 +32,10 @@ IPAddress myGateway(192, 168, 1, 1); // Adresse IP de la passerelle (routeur)//a
 // Initialiser une instance Ethernet  
 EthernetServer server(80); // Création d'un serveur sur le port 80
 
+float Humidity;
+float Temperature;
+String txtjson;
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -40,8 +44,7 @@ void setup() {
   lcd.clear();
 
    Ethernet.begin(mac, ip, myGateway, mySubnet);
-   
-   server.begin(80);
+   server.begin();
 //   // test pour serveur ethernet
 //   Serial.print("Serveur prêt à l'adresse : ");
 //   Serial.println(Ethernet.localIP());
@@ -57,8 +60,8 @@ void setup() {
 
 
 void loop() {
-  float Temperature = dht.readTemperature(); // Lire la température à partir du capteur DHT  
-  float Humidity = dht.readHumidity(); // Lire l'humidité à partir du capteur DHT
+  Temperature = dht.readTemperature(); // Lire la température à partir du capteur DHT  
+  Humidity = dht.readHumidity(); // Lire l'humidité à partir du capteur DHT
   
   if (isnan(Temperature) || isnan(Humidity)) {
     Serial.println("Échec de la lecture du capteur DHT !");
@@ -93,20 +96,22 @@ void loop() {
   lcd.print("Temp:");
   lcd.print(Temperature);
   lcd.print("C");
-    
-    
+  
+  txtjson = "{\"Temp\":" + String(Temperature) + ",\"Hum\":" + String(Humidity) + "}";
+
+  Serial.print(txtjson);
   delay(5000); // Ajouter un délai pour éviter des lectures trop fréquentes  
 }
 
 void serveurHTTP(EthernetServer serv, String txtjson) 
 { /* Cette fonction écoute si une connexion cliente est présente. Si il y a une requête client alors le serveur répond par une requête HTTP en envoyant le texte au format json (paramètre txtjson) */ 
-EthernetClient client = serv.available(); //Ecoute connexion cliente if (client) { 
+EthernetClient client = serv.available(); //Ecoute connexion cliente 
+if (client) { 
 Serial.println("new client"); 
 // Une requête HTTP termine toujours par une ligne vide. 
 boolean currentLineIsBlank = true; 
 while (client.connected()) { 
 if (client.available()) { 
-No. 5 / 6
 char c = client.read(); 
 Serial.write(c); 
 // On répond à la requête lorsque cuurentLineIsBlank et 
